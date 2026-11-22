@@ -1,0 +1,436 @@
+<div class="aurora" aria-hidden="true"><i class="a1"></i><i class="a2"></i></div>
+
+  <!-- 顶栏 -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">简</div>
+      <div>
+        <b>简记</b>
+        <small id="brandSub">本地记账 · 数据不出设备</small>
+      </div>
+    </div>
+    <button class="icon-btn" id="btnThemeQuick" aria-label="外观设置">
+      <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg>
+    </button>
+  </header>
+
+  <!-- 页面容器 -->
+  <main class="views">
+
+    <!-- 首页 -->
+    <section class="view" id="view-home">
+      <div class="hero" id="hero">
+        <div class="hero-label">
+          <span>本月结余</span>
+          <span class="pill" id="heroPill">预算 0%</span>
+        </div>
+        <div class="hero-amount num">
+          <span class="cur">¥</span>
+          <span class="v" id="heroAmount">0.00</span>
+        </div>
+        <div class="hero-foot num">
+          <span>收入 <b id="heroIncome">¥0.00</b></span>
+          <span>支出 <b id="heroExpense">¥0.00</b></span>
+        </div>
+        <div class="hero-progress"><i id="heroProgress" style="width:0%"></i></div>
+        <div class="hero-hint" id="heroHint">尚未设置月度预算</div>
+      </div>
+
+      <div class="quick">
+        <button type="button" data-act="add">
+          <span class="q-ico"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+          <b>记一笔</b>
+        </button>
+        <button type="button" data-tab="detail">
+          <span class="q-ico"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span>
+          <b>查明细</b>
+        </button>
+        <button type="button" data-tab="stats">
+          <span class="q-ico"><svg viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></svg></span>
+          <b>看统计</b>
+        </button>
+      </div>
+
+      <div class="overview num" id="homeOverview">
+        <div class="cell"><div class="k">本月支出</div><div class="v down" id="homeExpense">¥0.00</div></div>
+        <div class="cell"><div class="k">本月收入</div><div class="v up" id="homeIncome">¥0.00</div></div>
+        <div class="cell"><div class="k">记账笔数</div><div class="v" id="homeCount">0</div></div>
+      </div>
+
+      <div class="section-title">
+        <h3>分类排行</h3>
+        <span>本月支出</span>
+      </div>
+      <div class="card"><div class="rank" id="homeRanks"></div></div>
+
+      <div class="section-title">
+        <h3>最近记录</h3>
+        <button type="button" class="muted" style="font-size:12px" data-tab="detail">查看全部</button>
+      </div>
+      <div class="list-card" id="homeRecent"></div>
+      <div class="spacer-16"></div>
+    </section>
+
+    <!-- 明细 -->
+    <section class="view hidden" id="view-detail">
+      <div class="month-bar">
+        <b id="detailMonthLabel">—</b>
+        <div class="month-nav">
+          <button type="button" data-month="-1" aria-label="上个月"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <button type="button" data-month="1" aria-label="下个月"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+      <div class="chips" id="detailChips">
+        <button type="button" class="chip on" data-filter="all">全部</button>
+        <button type="button" class="chip" data-filter="expense">支出</button>
+        <button type="button" class="chip" data-filter="income">收入</button>
+      </div>
+      <div id="detailBody"></div>
+      <div class="spacer-16"></div>
+    </section>
+
+    <!-- 统计 -->
+    <section class="view hidden" id="view-stats">
+      <div class="month-bar">
+        <b id="statsMonthLabel">—</b>
+        <div class="month-nav">
+          <button type="button" data-month-stats="-1" aria-label="上个月"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <button type="button" data-month-stats="1" aria-label="下个月"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+      <div class="seg" id="statsSeg">
+        <button type="button" class="on" data-stats-type="expense">支出</button>
+        <button type="button" data-stats-type="income">收入</button>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <div class="donut-wrap">
+          <svg class="donut" viewBox="0 0 210 210" id="donutSvg"></svg>
+          <div class="donut-center">
+            <div class="k" id="donutLabel">支出合计</div>
+            <div class="v num" id="donutValue">¥0.00</div>
+          </div>
+        </div>
+        <div class="legend" id="statsLegend"></div>
+      </div>
+
+      <div class="overview num" id="statsFacts">
+        <div class="cell"><div class="k">日均</div><div class="v" id="statAvg">¥0.00</div></div>
+        <div class="cell"><div class="k">笔数</div><div class="v" id="statCount">0</div></div>
+        <div class="cell"><div class="k">单笔最高</div><div class="v" id="statMax">¥0.00</div></div>
+      </div>
+      <div class="spacer-16"></div>
+    </section>
+
+    <!-- 我的 -->
+    <section class="view hidden" id="view-me">
+      <div class="profile">
+        <div class="avatar">简</div>
+        <div class="p-main">
+          <b>简记</b>
+          <small id="meSub">只记该记的 · 数据存在本机</small>
+        </div>
+      </div>
+
+      <div class="group">
+        <button class="row" type="button" data-sheet="theme">
+          <span class="r-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></span>
+          <span class="r-main"><b>外观</b><small>深浅模式与主题色</small></span>
+          <span class="r-value" id="meTheme">深色</span>
+          <svg class="chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+        <button class="row" type="button" data-sheet="budget">
+          <span class="r-ico"><svg viewBox="0 0 24 24"><path d="M3 7h18v12H3z"/><path d="M3 7V5h18v2"/><path d="M16 13h2"/></svg></span>
+          <span class="r-main"><b>月度预算</b><small>首页进度按此计算</small></span>
+          <span class="r-value" id="meBudget">未设置</span>
+          <svg class="chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+        <button class="row" type="button" data-sheet="goal">
+          <span class="r-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4"/></svg></span>
+          <span class="r-main"><b>存钱目标</b><small>用结余推进目标</small></span>
+          <span class="r-value" id="meGoal">未设置</span>
+          <svg class="chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <div class="group">
+        <button class="row" type="button" data-sheet="data">
+          <span class="r-ico"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="7" ry="3"/><path d="M5 5v7c0 1.7 3.1 3 7 3s7-1.3 7-3V5"/><path d="M5 12v7c0 1.7 3.1 3 7 3s7-1.3 7-3v-7"/></svg></span>
+          <span class="r-main"><b>数据备份与恢复</b><small>JSON 复制 / 粘贴导入</small></span>
+          <span class="r-value" id="meCount">0 笔</span>
+          <svg class="chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+        <button class="row" type="button" data-sheet="guide">
+          <span class="r-ico"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v18H6.5A2.5 2.5 0 0 1 4 18.5z"/><path d="M4 18.5A2.5 2.5 0 0 1 6.5 16H20"/><path d="M9 8h7M9 12h5"/></svg></span>
+          <span class="r-main"><b>使用说明</b><small>三步记完一笔 · 常见问题</small></span>
+          <svg class="chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+        <button class="row" type="button" data-sheet="about">
+          <span class="r-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg></span>
+          <span class="r-main"><b>关于简记</b><small>设计语言与版本</small></span>
+          <svg class="chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <p class="muted" id="footVersion" style="text-align:center;font-size:11px;padding:22px 0 8px">简记 Android · v1.0.3 · 数据仅存本机</p>
+    </section>
+  </main>
+
+  <!-- 底部导航 -->
+  <nav class="tabbar">
+    <button type="button" class="tab on" data-tab="home">
+      <svg viewBox="0 0 24 24"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1z"/></svg>
+      <small>首页</small>
+    </button>
+    <button type="button" class="tab" data-tab="detail">
+      <svg viewBox="0 0 24 24"><path d="M5 5h14v15H5z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>
+      <small>明细</small>
+    </button>
+    <button type="button" class="tab mid" id="tabAdd" aria-label="记一笔">
+      <span class="mid-btn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>
+    </button>
+    <button type="button" class="tab" data-tab="stats">
+      <svg viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>
+      <small>统计</small>
+    </button>
+    <button type="button" class="tab" data-tab="me">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg>
+      <small>我的</small>
+    </button>
+  </nav>
+
+  <!-- 遮罩 -->
+  <div class="scrim" id="scrim" hidden></div>
+
+  <!-- 记账弹层 -->
+  <section class="sheet" id="sheet-add" hidden>
+    <div class="grab"></div>
+    <div class="sheet-head">
+      <h2>记一笔</h2>
+      <button class="icon-btn" type="button" data-close aria-label="关闭">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="sheet-body" id="addBody">
+      <div class="seg add-type" id="addType">
+        <button type="button" class="on" data-add-type="expense">支出</button>
+        <button type="button" data-add-type="income">收入</button>
+      </div>
+      <div class="amount-box">
+        <span class="cur">¥</span>
+        <span class="v empty" id="amountText">0.00</span>
+        <i class="caret"></i>
+      </div>
+      <div class="cat-strip" id="catStrip"></div>
+      <div class="add-fields">
+        <div class="date-chips" id="dateChips">
+          <button type="button" class="on" data-day="0">今天</button>
+          <button type="button" data-day="-1">昨天</button>
+          <button type="button" data-day="-2">前天</button>
+          <input class="text-input" id="datePick" type="date" style="height:34px;flex:1;min-width:120px" />
+        </div>
+        <input class="note-input" id="noteInput" type="text" maxlength="40" placeholder="备注，例如：早餐 豆浆（自动归类）" />
+      </div>
+    </div>
+    <div class="keypad" id="keypad">
+      <button type="button" data-key="1">1</button><button type="button" data-key="2">2</button><button type="button" data-key="3">3</button>
+      <button type="button" data-key="4">4</button><button type="button" data-key="5">5</button><button type="button" data-key="6">6</button>
+      <button type="button" data-key="7">7</button><button type="button" data-key="8">8</button><button type="button" data-key="9">9</button>
+      <button type="button" class="fn" data-key=".">.</button><button type="button" data-key="0">0</button>
+      <button type="button" class="fn" data-key="del" aria-label="删除">
+        <svg viewBox="0 0 24 24"><path d="M20 6H9l-5 6 5 6h11z"/><path d="M13 10l4 4M17 10l-4 4"/></svg>
+      </button>
+    </div>
+    <div class="save-wrap">
+      <button class="btn-primary" type="button" id="saveEntry" disabled>保存</button>
+    </div>
+  </section>
+
+  <!-- 记录详情 -->
+  <section class="sheet" id="sheet-entry" hidden>
+    <div class="grab"></div>
+    <div class="sheet-head">
+      <h2>记录详情</h2>
+      <button class="icon-btn" type="button" data-close aria-label="关闭">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="sheet-body" id="entryBody"></div>
+  </section>
+
+  <!-- 外观 -->
+  <section class="sheet" id="sheet-theme" hidden>
+    <div class="grab"></div>
+    <div class="sheet-head">
+      <h2>外观</h2>
+      <button class="icon-btn" type="button" data-close aria-label="关闭">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="sheet-body">
+      <div class="theme-modes" id="themeModes">
+        <button type="button" data-mode="system">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          跟随系统
+        </button>
+        <button type="button" data-mode="light">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+          浅色
+        </button>
+        <button type="button" data-mode="dark">
+          <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg>
+          深色
+        </button>
+      </div>
+      <div class="section-title" style="padding-top:2px"><h3 style="font-size:15px">主题色</h3><span>跨端一致</span></div>
+      <div class="accent-row" id="accentRow"></div>
+      <div class="spacer-16"></div>
+      <button class="btn-primary" type="button" data-close>完成</button>
+    </div>
+  </section>
+
+  <!-- 月度预算 -->
+  <section class="sheet" id="sheet-budget" hidden>
+    <div class="grab"></div>
+    <div class="sheet-head">
+      <h2>月度预算</h2>
+      <button class="icon-btn" type="button" data-close aria-label="关闭">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="sheet-body">
+      <p class="muted" style="font-size:13px;padding-bottom:10px">设置每月支出上限，首页会显示已用比例。留空表示不设预算。</p>
+      <input class="text-input" id="budgetInput" type="number" inputmode="decimal" min="0" step="100" placeholder="例如 6000" />
+      <div class="spacer-16"></div>
+      <button class="btn-primary" type="button" id="saveBudget">保存</button>
+    </div>
+  </section>
+
+  <!-- 存钱目标 -->
+  <section class="sheet" id="sheet-goal" hidden>
+    <div class="grab"></div>
+    <div class="sheet-head">
+      <h2>存钱目标</h2>
+      <button class="icon-btn" type="button" data-close aria-label="关闭">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="sheet-body">
+      <p class="muted" style="font-size:13px;padding-bottom:10px">用「收入 - 支出」的累计结余推进目标。</p>
+      <input class="text-input" id="goalName" type="text" maxlength="16" placeholder="目标名称，例如 年度存款" />
+      <div class="spacer-8"></div>
+      <input class="text-input" id="goalTarget" type="number" inputmode="decimal" min="0" step="500" placeholder="目标金额（元）" />
+      <div class="spacer-8"></div>
+      <p class="muted num" style="font-size:12px" id="goalProgress">尚未设置</p>
+      <div class="spacer-16"></div>
+      <button class="btn-primary" type="button" id="saveGoal">保存</button>
+    </div>
+  </section>
+
+  <!-- 数据 -->
+  <section class="sheet" id="sheet-data" hidden>
+    <div class="grab"></div>
+    <div class="sheet-head">
+      <h2>数据备份与恢复</h2>
+      <button class="icon-btn" type="button" data-close aria-label="关闭">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="sheet-body">
+      <p class="muted" style="font-size:12px;padding-bottom:8px">数据只存在本机。导出后请自行保存到安全位置；导入会覆盖当前数据。</p>
+      <textarea class="data-area num" id="dataArea" spellcheck="false" placeholder="点击「导出」生成备份 JSON，或粘贴 JSON 后点「导入」"></textarea>
+      <div class="data-actions">
+        <button class="btn-ghost" type="button" data-act="export">导出</button>
+        <button class="btn-ghost" type="button" data-act="import">导入</button>
+        <button class="btn-ghost" type="button" data-act="sample">载入示例</button>
+        <button class="btn-ghost btn-danger" type="button" data-act="clear">清空数据</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 使用说明 -->
+  <section class="sheet" id="sheet-guide" hidden>
+    <div class="grab"></div>
+    <div class="sheet-head">
+      <h2>使用说明</h2>
+      <button class="icon-btn" type="button" data-close aria-label="关闭">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="sheet-body">
+      <div class="guide">
+        <div class="guide-item">
+          <span class="guide-num num">1</span>
+          <div><b>记一笔</b><p>点底栏中间「＋」，输入金额，选好分类和日期，点保存。三步完成，不用填备注。</p></div>
+        </div>
+        <div class="guide-item">
+          <span class="guide-num num">2</span>
+          <div><b>看钱去哪了</b><p>「明细」按月查看每一笔；「统计」看分类占比与每日趋势。点顶部箭头切换月份。</p></div>
+        </div>
+        <div class="guide-item">
+          <span class="guide-num num">3</span>
+          <div><b>设置预算与目标</b><p>「我的 → 月度预算」设上限，首页显示剩余额度；「存钱目标」用累计结余推进。</p></div>
+        </div>
+        <div class="guide-item">
+          <span class="guide-num num">4</span>
+          <div><b>数据只在本机</b><p>记录不上传服务器；只有你手动点「关于简记 → 检查更新」时才联网下载更新。换机前到「我的 → 数据备份与恢复」导出 JSON，新机再导入即可。</p></div>
+        </div>
+        <p class="guide-note">小提示：主题色在「我的 → 外观」切换；点按明细里的记录可查看或删除。</p>
+      </div>
+      <div class="spacer-16"></div>
+      <button class="btn-primary" type="button" data-close>知道了</button>
+    </div>
+  </section>
+
+  <!-- 关于 -->
+  <section class="sheet" id="sheet-about" hidden>
+    <div class="grab"></div>
+    <div class="sheet-head">
+      <h2>关于简记</h2>
+      <button class="icon-btn" type="button" data-close aria-label="关闭">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="sheet-body">
+      <p style="font-size:14px;line-height:1.7">简记是给「记得住」这件事减负的记账工具：三步记完一笔，自动归类，月底看钱去了哪。</p>
+      <div class="spacer-16"></div>
+      <p class="muted" style="font-size:13px;line-height:1.8">
+        Android 端沿用小程序 v5.0 的卡片体系与桌面端的玻璃质感：暗紫渐变底、近黑卡片、280ms 缓动、四套主题色。<br />
+        金额以「分」为单位存储，日期统一 YYYY-MM-DD，分类键与小程序、Windows、macOS 完全一致，便于后续跨端同步。
+      </p>
+      <div class="spacer-16"></div>
+      <div class="update-box">
+        <div class="update-head">
+          <b>版本 <span class="num" id="aboutVersion">v1.0.3</span></b>
+          <span class="update-tag" id="updateTag">内置</span>
+        </div>
+        <p class="update-status" id="updateStatus">检查更新需联网，仅在你点击时发起请求，不会上传任何记录。</p>
+        <div class="update-actions">
+          <button class="btn-ghost" type="button" id="btnCheckUpdate">检查更新</button>
+          <button class="btn-ghost" type="button" id="btnRestoreBuiltin" hidden>恢复内置</button>
+        </div>
+      </div>
+      <div class="spacer-16"></div>
+      <button class="btn-ghost" type="button" data-close>关闭</button>
+    </div>
+  </section>
+
+  <!-- 确认 -->
+  <section class="sheet" id="sheet-confirm" hidden>
+    <div class="grab"></div>
+    <div class="sheet-head">
+      <h2 id="confirmTitle">确认</h2>
+      <button class="icon-btn" type="button" data-close aria-label="关闭">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="confirm-body">
+      <p id="confirmBody">该操作不可逆，请确认。</p>
+      <div class="confirm-actions">
+        <button class="btn-ghost" type="button" data-close>取消</button>
+        <button class="btn-ghost btn-danger" type="button" id="confirmOk">确认</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast"></div>
