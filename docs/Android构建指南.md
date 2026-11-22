@@ -7,7 +7,7 @@
 | 渠道 | 位置 |
 |------|------|
 | Actions | Actions → `Build Android APK` → 最近一次成功运行 → Artifacts → `jianji-android-debug-apk` |
-| Release | Releases → `android-v0.1.0` → `jianji-android-arm64-debug.apk` |
+| Release | Releases → `android-v0.1.1` → `jianji-android-arm64-debug.apk` |
 | 本地 | `src-tauri/gen/android/app/build/outputs/apk/` |
 
 debug 包为调试签名，仅供安装体验；正式分发需配置自己的 keystore（见第 5 节）。

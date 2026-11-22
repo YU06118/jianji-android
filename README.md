@@ -5,7 +5,7 @@
 ## 下载与安装
 
 - **CI 构建产物**：GitHub → Actions → `Build Android APK` → 最近一次成功运行 → Artifacts 下载 `jianji-android-debug-apk`。
-- **Release**：见仓库 Releases 中的 `android-v0.1.0`（如已发布）。
+- **Release**：见仓库 Releases 中的 `android-v0.1.1`（如已发布）。
 - **安装**：手机需允许「安装未知来源应用」。debug 包使用调试签名，不能覆盖正式签名包。
 
 ## 设计语言（三端合并）
@@ -22,7 +22,7 @@
 - **记一笔**：支出 / 收入切换，12 + 5 个分类，3 列数字键盘，今天 / 昨天 / 前天与日期选择，备注关键词自动归类
 - **明细**：月份切换、全部 / 支出 / 收入筛选、按日分组
 - **统计**：环形图 + 图例、日均、笔数、单笔最高
-- **我的**：深浅模式（含跟随系统）、四套主题色、月度预算、存钱目标、JSON 备份 / 导入、示例数据、清空数据
+- **我的**：深浅模式（含跟随系统）、四套主题色、月度预算、存钱目标、使用说明、JSON 备份 / 导入、示例数据、清空数据
 - **数据口径**：金额以「分」存整数；日期 `YYYY-MM-DD`；分类键与小程序 / Windows / macOS 同名，便于后续跨端同步
 - **持久化**：WebView `localStorage`（键 `jianji.android.v1`）
 
@@ -47,7 +47,7 @@ jianji-android/
 │   ├── src/{main.rs,lib.rs}     # Tauri 入口
 │   ├── icons/                  # 应用图标（含 android mipmap）
 │   ├── Cargo.toml
-│   └── tauri.conf.json         # 标识 com.yu06118.jianji，版本 0.1.0
+│   └── tauri.conf.json         # 标识 com.yu06118.jianji，版本 0.1.1
 ├── .github/workflows/android.yml   # APK 构建流水线
 ├── docs/Android构建指南.md
 └── package.json
@@ -80,4 +80,4 @@ npx tauri android build --apk --debug --target aarch64 --split-per-abi
 | 微信小程序（主端） | `YU06118/jianji-miniprogram` | 已完成 |
 | Windows 桌面端 | `YU06118/jianji-windows` | 已完成 |
 | macOS 桌面端 | `YU06118/jianji-macos` | 已完成（v0.1.8，双架构） |
-| Android（本仓库） | `YU06118/jianji-android` | v0.1.0 · debug APK |
+| Android（本仓库） | `YU06118/jianji-android` | v0.1.1 · debug APK |
