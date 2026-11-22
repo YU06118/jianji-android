@@ -1,6 +1,6 @@
 # 简记 · Android 端（jianji-android）
 
-> 本仓库原为「简记」双端 monorepo，现已按平台拆分重构。本仓库专门承载 **Android 手机版**，目标为打包生成 APK 安装包。
+> 本仓库原为「简记」monorepo（原仓库名 `jianji`），2026-11-22 起更名为 **jianji-android**，专门承载 **Android 手机版**，目标为打包生成 APK 安装包。
 > 旧 monorepo 代码完整保留在 `archive/monorepo-20261122` 分支。
 
 ## 技术方案
@@ -11,10 +11,11 @@
 
 | 平台 | 仓库 | 状态 |
 |------|------|------|
-| 微信小程序 | `YU06118/jianji-miniprogram` | 已完成 |
-| Windows 桌面端 | `YU06118/jianji-windows` | 已完成 |
-| macOS 桌面端 | `YU06118/jianji-macos` | 已完成 |
-| Android（本仓库） | `YU06118/jianji` | **骨架阶段，内容待填充** |
+| 文档总导航 | `YU06118/jianji` | 四端文档集合与直达入口 |
+| 微信小程序（主端） | `YU06118/jianji-miniprogram` | 已完成 |
+| Windows 桌面端 | `YU06118/jianji-windows` | 已完成（历史发版 v0.1.2–v0.1.8 暂存本仓库 Releases） |
+| macOS 桌面端 | `YU06118/jianji-macos` | 已完成（v0.1.8，Intel + Apple Silicon） |
+| Android（本仓库） | `YU06118/jianji-android` | **骨架阶段，内容待填充** |
 
 ## 功能一致性基线（与桌面端/小程序端对齐）
 
@@ -27,7 +28,7 @@
 ## 目录结构
 
 ```
-jianji/
+jianji-android/
 ├── src/                     # 前端界面（待填充，复用桌面端 UI 适配移动端布局）
 ├── src-tauri/               # Tauri v2 工程核心
 │   ├── src/                 # Rust 源码（main.rs / lib.rs 骨架已就位）
