@@ -98,6 +98,7 @@ body {
   overflow: hidden;
   user-select: none;
   -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .theme-dark body,
@@ -115,6 +116,7 @@ button {
   background: none;
   color: inherit;
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 /* ---------------- 骨架 ---------------- */

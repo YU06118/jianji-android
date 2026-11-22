@@ -1,6 +1,6 @@
 [package]
 name = "jianji"
-version = "1.0.0"
+version = "0.1.0"
 description = "简记 Android 端 - 个人记账"
 edition = "2021"
 
