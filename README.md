@@ -1,106 +1,55 @@
-# 简记 · 家庭记账工具
+# 简记 · Android 端（jianji-android）
 
-> 一个开源、本地优先的记账工具：**Windows 桌面端**（Tauri v2 + Rust + SQLite）与**微信小程序端**双端并行。
-> 当前版本：桌面端 **v0.1.8**（含自动更新、分类增改删、明细编辑、真实统计、自定义提醒）｜小程序 **v1.0.0**（Fluent 2 视觉体系）
-> 仓库：<https://github.com/YU06118/jianji>
+> 本仓库原为「简记」双端 monorepo，现已按平台拆分重构。本仓库专门承载 **Android 手机版**，目标为打包生成 APK 安装包。
+> 旧 monorepo 代码完整保留在 `archive/monorepo-20261122` 分支。
 
-## 它解决什么问题
+## 技术方案
 
-记账工具最常见的失败原因是**记起来太慢**和**月底才发现超支**。简记的取舍：
+采用 **Tauri v2** 移动端支持（Rust 内核 + WebView 前端），与 Windows 端（jianji-desktop）、macOS 端（jianji-macos）保持同一技术栈，最大限度复用共享业务逻辑（记账核心、SQLite 存储层、收支统计）。
 
-- **3 秒记一笔**：双端均使用系统输入法（桌面端 v0.1.7 起移除内置数字键盘），打开即录。
-- **首页回答"这个月还能花多少"**：已花的钱是沉没成本，剩余额度才是决策依据。
-- **事前预警**：按当前花钱速度预测月底总额，花得比时间快就提前提醒，而不是月底才报警。
-- **数据本地优先**：桌面端 SQLite 存本机；小程序数据只存手机本地，零网络请求、零第三方依赖。
-- **双端可迁移**：桌面端已支持 JSON 备份 / 导入；扫码或同步码互通待实现。
+## 各平台仓库
 
-## 功能一览
+| 平台 | 仓库 | 状态 |
+|------|------|------|
+| 微信小程序 | `YU06118/jianji-miniprogram` | 已完成 |
+| Windows 桌面端 | `YU06118/jianji-desktop` | 已完成 |
+| macOS 桌面端 | `YU06118/jianji-macos` | 已完成 |
+| Android（本仓库） | `YU06118/jianji` | **骨架阶段，内容待填充** |
 
-| 能力 | 桌面端 | 小程序端 |
-|---|---|---|
-| 记一笔（收支/分类/备注/小票图） | ✅ 系统输入法 + 图片 | ✅ 系统输入法，自动分类 |
-| 概览（本月收支/结余/趋势/最近记录） | ✅ | ✅「本月还能花」+ 预警 |
-| 统计（环形图/分类排行/日历热力图/多年切换） | ✅ | ✅ 环形图 + 6 个月趋势 |
-| 预算（总预算 + 分项预算） | — | ✅ |
-| 攒钱目标（进度/按期所需月存/达成预测） | — | ✅ |
-| 外观（主题色 / 深浅模式 / 跟随系统） | ✅ 三档外观（跟随系统 / 浅色 / 深色） | ✅ 三档外观 + 四套主题色 |
-| 导出 / 备份 / 恢复 | ✅ CSV + JSON 备份 / 导入 | ✅ JSON 备份恢复 |
-| 分类增改删 / 明细编辑 / 回收站 | ✅ | 分类预设、记录可编辑 |
-| 每日记账提醒 | ✅ 自定义时分（仅应用运行时） | — |
-| 自动更新 | ✅ minisign 签名更新（GitHub 单源） | —（微信审核发布） |
+## 功能一致性基线（与桌面端/小程序端对齐）
 
-## 快速开始
-
-### Windows 桌面端
-
-- **安装**：从 [Releases](https://github.com/YU06118/jianji/releases) 下载最新 `*-setup.exe` 安装即可；后续新版本会自动提示更新（已配置 minisign 签名校验）。
-- **源码构建**：见 [使用与部署说明](docs/使用与部署说明.md#一windows-桌面端exe)。前置：Rust、Node.js 18+、VS Build Tools（C++ 桌面负载）、WebView2。
-- **数据位置**：`%APPDATA%\com.jianji.ledger\`（`jianji.db` + `images\`）。
-
-### 微信小程序端
-
-1. 安装[微信开发者工具](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html)。
-2. 导入项目，目录选 `简记小程序/`（能看到 `app.json` 的那一层），AppID 已配置为 `wx7e44ad0c1a857e87`。
-3. 编译即可体验；「我的 → 填一份示例数据」可一键生成 26 笔本月示例账 + 预算 + 攒钱目标。
-4. 提审前必读 [小程序 README](简记小程序/README.md) 中的类目与隐私协议章节（剪贴板必须声明，否则备份恢复失效）。
-
-### 浏览器原型（无需任何工具）
-
-`prototypes/` 下两个自包含 HTML 可直接双击打开，分别预览桌面端与小程序端交互。
+- 收入 / 支出 / 转账记录的增删改查
+- 自定义收支分类管理
+- 按月 / 按分类汇总统计与图表
+- 账单流水检索
+- 本地 SQLite 存储（移动端位于应用私有目录）
 
 ## 目录结构
 
 ```
 jianji/
-├── README.md                    本文件
-├── docs/                        需求/部署/热更新/上传流程/API/更新日志/交付清单/进度交接文档
-├── shared/                      双端共享核心算法与测试（金额"分"制、统计、CSV、备份）
-├── prototypes/                  桌面端 / 小程序端视觉原型（自包含 HTML）
-├── desktop/                     Tauri v2 桌面端
-│   ├── frontend/                原生 HTML/CSS/JS（无打包器，withGlobalTauri）
-│   └── src-tauri/               Rust 命令层 + SQLite + 更新器 + CI  signs
-├── 简记小程序/                   微信小程序原生工程（零依赖）
-│   ├── utils/                   数据层 store / 校验 safe / 金额 / 日期 / 分类
-│   ├── pages/                   首页、记账、统计、预算、目标、我的、设置
-│   └── assets/icons/            Fluent 线性 SVG 图标
-└── .github/workflows/           打 tag 自动构建、签名、发布 Release 与 latest.json
+├── src/                     # 前端界面（待填充，复用桌面端 UI 适配移动端布局）
+├── src-tauri/               # Tauri v2 工程核心
+│   ├── src/                 # Rust 源码（main.rs / lib.rs 骨架已就位）
+│   ├── gen/                 # tauri android init 自动生成的 Android 工程（已 gitignore）
+│   ├── icons/               # 应用图标（待补充）
+│   ├── Cargo.toml           # Rust 依赖清单
+│   └── tauri.conf.json      # Tauri 配置（应用标识 com.yu06118.jianji）
+├── shared/                  # 跨平台共享逻辑占位（与桌面端同步演进）
+├── docs/
+│   ├── 目录结构说明.md
+│   └── Android构建指南.md   # APK 打包完整步骤
+└── package.json             # Tauri CLI 脚本入口
 ```
 
-## 文档索引
+## 快速开始
 
-| 文档 | 内容 |
-|---|---|
-| [使用与部署说明](docs/使用与部署说明.md) | 双端使用、源码构建、小程序注册与上线、自检命令 |
-| [API 文档](docs/API.md) | 桌面端 Tauri 命令、小程序 store/safe 工具 API、共享核心 |
-| [更新日志](docs/CHANGELOG.md) | 桌面端 v0.1.1~v0.1.8、小程序视觉与功能演进 |
-| [需求文档](docs/需求文档.md) | 34 轮调研产出：功能、界面、数据、技术选型 |
-| [热更新设计与使用说明](docs/热更新设计与使用说明.md) | 安全模型、双源架构、发布 SOP、回滚预案 |
-| [GitHub 上传流程](docs/GitHub上传流程.md) | 日常提交、tag 自动发版、Secrets 清单 |
-| [交付清单](docs/交付清单.md) | 当前交付包内容与状态 |
-| [项目进度交接文档](docs/项目进度交接文档-2026-11-21.md) | 交接基线：概况、已完成、进行中、待办、架构、已知问题、接手操作 |
-| [小程序 README](简记小程序/README.md) | 小程序使用、发布、关键口径、常见问题 |
-| [小程序安全与合规规范](简记小程序/安全与合规规范.md) | 上架红线、数据分级、输入校验、隐私指引模板 |
-| [小程序设计规范](简记小程序/设计规范.md) | 色板、主题、排版、组件规格、文案语气 |
-| [小程序测试手册](简记小程序/测试手册.md) | 验收清单、必做真机项、P0/P1 判定 |
-
-## 自检
+详见 [docs/Android构建指南.md](docs/Android构建指南.md)。最小命令集：
 
 ```bash
-node shared/core.test.js                          # 共享核心逻辑
-cd 简记小程序 && node tools/security-audit.js     # 安全与合规体检（退出码非 0 即未通过）
-cd 简记小程序 && node tools/selfcheck_data.js .   # 数据层 88 项
-cd 简记小程序 && node tools/selfcheck_ui.js .     # UI 层 118 项（依赖 jsdom）
+npm install
+npx tauri android init      # 首次执行，生成 Android 工程
+npx tauri android build --apk   # 产出 APK 至 src-tauri/gen/android/app/build/outputs/
 ```
 
-当前状态：共享核心、数据层 88/88、UI 层 118/118、安全体检全部通过。
-
-## 安全与隐私
-
-- 小程序**零网络请求**是硬约束，`security-audit.js` 会拦截新增的 `wx.request`。
-- 所有外部输入（键盘输入、粘贴的备份文本、剪贴板）经 `utils/safe.js` **白名单重建**后再写入。
-- 桌面端更新包经 minisign 签名校验，更新源为 GitHub Release（可选 COS 镜像）。
-- 数据只在本机；卸载小程序 / 清理微信存储会丢失本地数据，请定期备份。
-
-## 许可与作者
-
-个人开源项目，作者 YU06118。问题与建议请提 [GitHub Issue](https://github.com/YU06118/jianji/issues)。
+环境要求：Rust、Android Studio（SDK + NDK）、JDK 17、Node.js ≥ 18。

@@ -1,22 +1,22 @@
-# 桌面端依赖与编译产物
-desktop/node_modules/
-desktop/src-tauri/target/
-desktop/src-tauri/gen/
+# Node
+node_modules/
+dist/
 
-# 小程序依赖（本项目零依赖，仅保险）
-简记小程序/node_modules/
+# Rust / Tauri
+src-tauri/target/
 
-# 系统文件
+# Tauri Android 工程由 `tauri android init` 生成，不入库
+src-tauri/gen/
+
+# 构建产物与签名密钥（严禁提交签名 keystore）
+*.apk
+*.aab
+*.keystore
+*.jks
+local.properties
+
+# IDE / 系统
+.idea/
+.vscode/
 .DS_Store
 Thumbs.db
-desktop.ini
-*.log
-
-# WorkBuddy 工作数据
-.workbuddy/
-
-# 本地交付包（构建产物，不入库）
-*.zip
-
-# 微信开发者工具本地个人配置
-简记小程序/project.private.config.json
