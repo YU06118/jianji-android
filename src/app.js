@@ -7,7 +7,7 @@
 
   var JJ = window.JJ;
   var KEY = 'jianji.android.v1';
-  var VERSION = '0.1.0';
+  var VERSION = '0.1.1';
   var MODE_LABEL = { system: '跟随系统', light: '浅色', dark: '深色' };
   var DEFAULT_SETTINGS = { mode: 'dark', accent: 'blue', budget: 600000, goal: { name: '', target: 0 } };
 
@@ -725,6 +725,7 @@
         else if (name === 'budget') openBudget();
         else if (name === 'goal') openGoal();
         else if (name === 'data') openData();
+        else if (name === 'guide') showSheet('sheet-guide');
         else if (name === 'about') showSheet('sheet-about');
         return;
       }
@@ -861,6 +862,7 @@
 
   /* ---------------- 启动 ---------------- */
   function boot() {
+    if (/Android/i.test(navigator.userAgent)) document.documentElement.classList.add('platform-android');
     applyTheme();
     bind();
     renderAll();
