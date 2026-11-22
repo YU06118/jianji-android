@@ -15,3 +15,7 @@ tauri-build = { version = "2", features = [] }
 tauri = { version = "2", features = [] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+
+# debug APK 去掉符号，避免单包体积过大（不影响运行与日志）
+[profile.dev]
+strip = "symbols"

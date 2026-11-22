@@ -73,7 +73,7 @@ jobs:
         run: npx tauri android init
 
       - name: Build APK
-        run: npx tauri android build --apk --debug --target aarch64
+        run: npx tauri android build --apk --debug --target aarch64 --split-per-abi
 
       - name: Collect APK
         run: |

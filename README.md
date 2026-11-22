@@ -67,7 +67,7 @@ GitHub → Actions → Build Android APK → Run workflow
 npm install
 npx tauri icon src-tauri/icons/icon.png   # 生成 mipmap
 npx tauri android init                    # 首次执行
-npx tauri android build --apk --debug --target aarch64
+npx tauri android build --apk --debug --target aarch64 --split-per-abi
 ```
 
 产物：`src-tauri/gen/android/app/build/outputs/apk/`。详见 [docs/Android构建指南.md](docs/Android构建指南.md)。

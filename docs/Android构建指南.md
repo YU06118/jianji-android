@@ -18,7 +18,7 @@ debug 包为调试签名，仅供安装体验；正式分发需配置自己的 k
 
 - **触发**：推送到 `main`（`src/**`、`src-tauri/**`、`package.json`、工作流本身变化），或在 Actions 页面手动 `Run workflow`。
 - **环境**：`ubuntu-latest`、Node 20、JDK 17（Temurin）、Android SDK 34 + Build-Tools 34、NDK `27.0.12077973`、Rust stable + 四个 Android target。
-- **流程**：`npm install` → `tauri icon` 生成 mipmap → `tauri android init` → `tauri android build --apk --debug --target aarch64` → 收集并上传 APK。
+- **流程**：`npm install` → `tauri icon` 生成 mipmap → `tauri android init` → `tauri android build --apk --debug --target aarch64 --split-per-abi` → 收集并上传 APK。
 - **产物**：`jianji-android-debug-apk`（保留 30 天）。
 
 > 只构建 `arm64` 以缩短时间；需要 32 位或模拟器包时，把 `--target aarch64` 换成 `aarch64,armv7,x86_64` 或去掉该参数。
@@ -46,7 +46,7 @@ rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-andro
 npm install
 npx tauri icon src-tauri/icons/icon.png      # 从 1024 源图生成各尺寸与 Android mipmap
 npx tauri android init                       # 仅首次，生成 src-tauri/gen/android
-npx tauri android build --apk --debug --target aarch64
+npx tauri android build --apk --debug --target aarch64 --split-per-abi
 ```
 
 产物目录：
@@ -60,7 +60,6 @@ src-tauri/gen/android/app/build/outputs/apk/aarch64/debug/
 ```bash
 adb install -r src-tauri/gen/android/app/build/outputs/apk/aarch64/debug/app-aarch64-debug.apk
 ```
-
 `src-tauri/gen/` 与 `target/` 已在 `.gitignore` 中，不入库。
 
 ## 5. Release 签名
@@ -84,7 +83,7 @@ keyPassword=你的密码
 3. 构建 release 包：
 
 ```bash
-npx tauri android build --apk --target aarch64
+npx tauri android build --apk --target aarch64 --split-per-abi
 ```
 
 若 CI 需要出正式包，把 keystore 与密码放入 GitHub Secrets，并在工作流里解码 keystore、生成 `keystore.properties` 后再执行 release 构建。不要提交 keystore 与密码。
