@@ -779,18 +779,22 @@
   }
 
   function fetchManifest() {
-    var chain = Promise.reject(new Error('无法获取更新清单'));
-    HOT_MANIFEST.forEach(function (url) {
-      chain = chain.catch(function () {
-        return fetchText(url, 8000).then(function (text) {
+    return new Promise(function (resolve, reject) {
+      var pending = HOT_MANIFEST.length;
+      var firstErr = null;
+      HOT_MANIFEST.forEach(function (url) {
+        fetchText(url, 8000).then(function (text) {
           var m = JSON.parse(text);
           if (!validManifest(m)) throw new Error('更新清单格式不正确');
           m.origin = url.slice(0, url.lastIndexOf('/') + 1);
-          return m;
+          resolve(m);
+        }).catch(function (e) {
+          if (!firstErr) firstErr = e;
+          pending -= 1;
+          if (pending === 0) reject(firstErr || new Error('无法获取更新清单'));
         });
       });
     });
-    return chain;
   }
 
   function downloadPkg(m) {

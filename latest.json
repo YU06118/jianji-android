@@ -2,11 +2,11 @@
   "version": "1.0.3",
   "base": "1.0.3/",
   "notes": "v1.0.3：新增 Web 层热更新（检查更新 / 恢复内置），顶栏安全区间距",
-  "publishedAt": "2026-11-22T07:15:48.469Z",
+  "publishedAt": "2026-11-22T07:16:20.312Z",
   "sha256": {
     "body": "835a8c5b70b95bb2bf05141668701ee68fe782a5c2dfa7f6034f3855e70bf62b",
     "css": "55b2cf06fa181ad2dbab0b0ea07a8f191020ad530168fab8485dfeb6f455ad13",
     "core": "3ea5049cc06732e939e81c3bde17f13f7a3f2b68da407ea40534f70db804de9a",
-    "app": "6ccdee0c78a4578ecdfbb829610a367d03cd69ae6901bb572fb6aa4e05fe1c46"
+    "app": "460a890da08479b0407eba0b3d9e499112d67442d3d0baf27aea870076558751"
   }
 }
