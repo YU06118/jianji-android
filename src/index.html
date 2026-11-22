@@ -7,9 +7,11 @@
 <meta name="color-scheme" content="light dark" />
 <title>简记</title>
 <link rel="stylesheet" href="styles.css" />
+<script src="boot.js" defer></script>
 </head>
 <body>
 <div class="app" id="app">
+  <!-- APP_BODY_START -->
   <div class="aurora" aria-hidden="true"><i class="a1"></i><i class="a2"></i></div>
 
   <!-- 顶栏 -->
@@ -184,7 +186,7 @@
         </button>
       </div>
 
-      <p class="muted" style="text-align:center;font-size:11px;padding:22px 0 8px">简记 Android · v0.1.1 · 数据仅存本机</p>
+      <p class="muted" id="footVersion" style="text-align:center;font-size:11px;padding:22px 0 8px">简记 Android · v1.0.3 · 数据仅存本机</p>
     </section>
   </main>
 
@@ -385,7 +387,7 @@
         </div>
         <div class="guide-item">
           <span class="guide-num num">4</span>
-          <div><b>数据只在本机</b><p>不联网、不上传。换机前到「我的 → 数据备份与恢复」导出 JSON，新机再导入即可。</p></div>
+          <div><b>数据只在本机</b><p>记录不上传服务器；只有你手动点「关于简记 → 检查更新」时才联网下载更新。换机前到「我的 → 数据备份与恢复」导出 JSON，新机再导入即可。</p></div>
         </div>
         <p class="guide-note">小提示：主题色在「我的 → 外观」切换；点按明细里的记录可查看或删除。</p>
       </div>
@@ -411,7 +413,17 @@
         金额以「分」为单位存储，日期统一 YYYY-MM-DD，分类键与小程序、Windows、macOS 完全一致，便于后续跨端同步。
       </p>
       <div class="spacer-16"></div>
-      <p class="muted num" style="font-size:12px">版本 v0.1.1 · Tauri v2 / Android</p>
+      <div class="update-box">
+        <div class="update-head">
+          <b>版本 <span class="num" id="aboutVersion">v1.0.3</span></b>
+          <span class="update-tag" id="updateTag">内置</span>
+        </div>
+        <p class="update-status" id="updateStatus">检查更新需联网，仅在你点击时发起请求，不会上传任何记录。</p>
+        <div class="update-actions">
+          <button class="btn-ghost" type="button" id="btnCheckUpdate">检查更新</button>
+          <button class="btn-ghost" type="button" id="btnRestoreBuiltin" hidden>恢复内置</button>
+        </div>
+      </div>
       <div class="spacer-16"></div>
       <button class="btn-ghost" type="button" data-close>关闭</button>
     </div>
@@ -436,9 +448,8 @@
   </section>
 
   <div class="toast" id="toast"></div>
+  <!-- APP_BODY_END -->
 </div>
 
-<script src="core.js"></script>
-<script src="app.js"></script>
 </body>
 </html>

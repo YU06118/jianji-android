@@ -72,6 +72,13 @@ jobs:
       - name: Init Android project
         run: npx tauri android init
 
+      - name: Ensure INTERNET permission
+        run: |
+          MANIFEST=src-tauri/gen/android/app/src/main/AndroidManifest.xml
+          grep -q 'android.permission.INTERNET' "$MANIFEST" || \
+            sed -i 's|<application|<uses-permission android:name="android.permission.INTERNET" />\n    <application|' "$MANIFEST"
+          grep -n 'android.permission.INTERNET' "$MANIFEST"
+
       - name: Build APK
         run: npx tauri android build --apk --debug --target aarch64 --split-per-abi
 

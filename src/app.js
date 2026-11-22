@@ -7,7 +7,12 @@
 
   var JJ = window.JJ;
   var KEY = 'jianji.android.v1';
-  var VERSION = '0.1.1';
+  var VERSION = '1.0.3';
+  var HOT_KEY = 'jianji.hot.pkg.v1';
+  var HOT_MANIFEST = [
+    'https://raw.githubusercontent.com/YU06118/jianji-android/hot/latest.json',
+    'https://cdn.jsdelivr.net/gh/YU06118/jianji-android@hot/latest.json'
+  ];
   var MODE_LABEL = { system: '跟随系统', light: '浅色', dark: '深色' };
   var DEFAULT_SETTINGS = { mode: 'dark', accent: 'blue', budget: 600000, goal: { name: '', target: 0 } };
 
@@ -703,6 +708,173 @@
     });
   }
 
+  /* ---------------- 热更新 ---------------- */
+  var updateBusy = false;
+  var HOT_FILES = { body: 'body.html', css: 'styles.css', core: 'core.js', app: 'app.js' };
+
+  function activeVersion() { return window.JJ_ACTIVE_VERSION || VERSION; }
+
+  function hotPkg() {
+    try {
+      var raw = localStorage.getItem(HOT_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function compareVersion(a, b) {
+    var pa = String(a).split('.'), pb = String(b).split('.');
+    for (var i = 0; i < 3; i++) {
+      var x = Number(pa[i]) || 0, y = Number(pb[i]) || 0;
+      if (x !== y) return x > y ? 1 : -1;
+    }
+    return 0;
+  }
+
+  function fetchText(url, ms) {
+    return new Promise(function (resolve, reject) {
+      var done = false;
+      var ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+      var timer = setTimeout(function () {
+        if (done) return;
+        done = true;
+        if (ctrl) { try { ctrl.abort(); } catch (e) { /* 忽略 */ } }
+        reject(new Error('网络超时'));
+      }, ms || 8000);
+      fetch(url, { cache: 'no-store', signal: ctrl ? ctrl.signal : undefined }).then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.text();
+      }).then(function (text) {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        resolve(text);
+      }, function (err) {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        reject(err);
+      });
+    });
+  }
+
+  function sha256(text) {
+    if (!(window.crypto && window.crypto.subtle)) return Promise.reject(new Error('设备不支持完整性校验'));
+    var data = new TextEncoder().encode(text);
+    return crypto.subtle.digest('SHA-256', data).then(function (buf) {
+      return Array.prototype.map.call(new Uint8Array(buf), function (b) {
+        return ('0' + b.toString(16)).slice(-2);
+      }).join('');
+    });
+  }
+
+  function validManifest(m) {
+    if (!m || !/^\d+\.\d+\.\d+$/.test(String(m.version || ''))) return false;
+    if (typeof m.base !== 'string' || !/^[\w.\-\/]+$/.test(m.base)) return false;
+    if (!m.sha256) return false;
+    return ['body', 'css', 'core', 'app'].every(function (k) {
+      return typeof m.sha256[k] === 'string' && /^[a-f0-9]{64}$/.test(m.sha256[k]);
+    });
+  }
+
+  function fetchManifest() {
+    return new Promise(function (resolve, reject) {
+      var pending = HOT_MANIFEST.length;
+      var firstErr = null;
+      HOT_MANIFEST.forEach(function (url) {
+        fetchText(url, 8000).then(function (text) {
+          var m = JSON.parse(text);
+          if (!validManifest(m)) throw new Error('更新清单格式不正确');
+          m.origin = url.slice(0, url.lastIndexOf('/') + 1);
+          resolve(m);
+        }).catch(function (e) {
+          if (!firstErr) firstErr = e;
+          pending -= 1;
+          if (pending === 0) reject(firstErr || new Error('无法获取更新清单'));
+        });
+      });
+    });
+  }
+
+  function downloadPkg(m) {
+    var pkg = { version: m.version, notes: String(m.notes || ''), installedAt: Date.now() };
+    return ['body', 'css', 'core', 'app'].reduce(function (chain, key) {
+      return chain.then(function () {
+        return fetchText(m.origin + m.base + HOT_FILES[key], 20000).then(function (text) {
+          return sha256(text).then(function (hash) {
+            if (hash !== m.sha256[key]) throw new Error(HOT_FILES[key] + ' 校验失败');
+            pkg[key] = text;
+          });
+        });
+      });
+    }, Promise.resolve()).then(function () { return pkg; });
+  }
+
+  function setUpdateStatus(text, kind) {
+    var el = $('updateStatus');
+    if (!el) return;
+    el.textContent = text;
+    el.className = 'update-status' + (kind ? ' ' + kind : '');
+  }
+
+  function setUpdateBusy(busy) {
+    updateBusy = busy;
+    ['btnCheckUpdate', 'btnRestoreBuiltin'].forEach(function (id) {
+      var b = $(id);
+      if (b) b.disabled = busy;
+    });
+  }
+
+  function renderAbout() {
+    var pkg = hotPkg();
+    var ver = activeVersion();
+    if ($('aboutVersion')) $('aboutVersion').textContent = 'v' + ver;
+    if ($('updateTag')) {
+      $('updateTag').textContent = pkg ? '热更新' : '内置';
+      $('updateTag').className = 'update-tag' + (pkg ? ' hot' : '');
+    }
+    if ($('btnRestoreBuiltin')) $('btnRestoreBuiltin').hidden = !pkg;
+    if ($('footVersion')) $('footVersion').textContent = '简记 Android · v' + ver + ' · 数据仅存本机';
+    setUpdateStatus(pkg
+      ? '当前为热更新版本（v' + pkg.version + '）。检查更新需联网，不会上传记录。'
+      : '检查更新需联网，仅在你点击时发起请求，不会上传任何记录。');
+    setUpdateBusy(false);
+  }
+
+  function checkUpdate() {
+    if (updateBusy) return;
+    setUpdateBusy(true);
+    setUpdateStatus('正在检查更新…');
+    fetchManifest().then(function (m) {
+      if (compareVersion(m.version, activeVersion()) <= 0) {
+        setUpdateBusy(false);
+        setUpdateStatus('已是最新版本（v' + activeVersion() + '）。');
+        return null;
+      }
+      setUpdateStatus('发现 v' + m.version + '，正在下载并校验…');
+      return downloadPkg(m).then(function (pkg) {
+        try {
+          localStorage.setItem(HOT_KEY, JSON.stringify(pkg));
+        } catch (e) {
+          throw new Error('本机存储空间不足');
+        }
+        setUpdateStatus('v' + pkg.version + ' 已下载并校验通过，正在重启…', 'ok');
+        setTimeout(function () { window.location.reload(); }, 800);
+      });
+    }).catch(function (e) {
+      setUpdateBusy(false);
+      setUpdateStatus('检查失败：' + (e && e.message ? e.message : '网络不可用') + '。可稍后重试。', 'bad');
+    });
+  }
+
+  function restoreBuiltin() {
+    openConfirm('恢复内置版本', '将清除已下载的热更新包并重启。记录与设置不受影响。', '恢复并重启', function () {
+      try { localStorage.removeItem(HOT_KEY); } catch (e) { /* 忽略 */ }
+      window.location.reload();
+    });
+  }
+
   /* ---------------- 事件绑定 ---------------- */
   function bind() {
     document.addEventListener('click', function (e) {
@@ -726,7 +898,7 @@
         else if (name === 'goal') openGoal();
         else if (name === 'data') openData();
         else if (name === 'guide') showSheet('sheet-guide');
-        else if (name === 'about') showSheet('sheet-about');
+        else if (name === 'about') { renderAbout(); showSheet('sheet-about'); }
         return;
       }
 
@@ -785,6 +957,9 @@
 
       if (t.closest('#saveBudget')) { saveBudget(); return; }
       if (t.closest('#saveGoal')) { saveGoal(); return; }
+
+      if (t.closest('#btnCheckUpdate')) { checkUpdate(); return; }
+      if (t.closest('#btnRestoreBuiltin')) { restoreBuiltin(); return; }
 
       var act = t.closest('[data-act]');
       if (act) {
@@ -867,6 +1042,7 @@
     bind();
     renderAll();
     renderThemeSheet();
+    renderAbout();
     switchTab('home');
   }
 

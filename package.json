@@ -1,7 +1,7 @@
 {
   "name": "jianji-android",
   "private": true,
-  "version": "0.1.1",
+  "version": "1.0.3",
   "description": "简记 Android 端（Tauri v2），打包生成 APK 安装包",
   "scripts": {
     "tauri": "tauri",

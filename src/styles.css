@@ -570,6 +570,20 @@ button {
 }
 .data-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
 
+/* 关于 · 更新 */
+.update-box { padding: 14px; border-radius: var(--r-card); background: var(--bg-2); }
+.update-head { display: flex; align-items: center; justify-content: space-between; }
+.update-head b { font-size: 14px; font-weight: 600; }
+.update-tag { font-size: 11px; padding: 3px 9px; border-radius: var(--r-pill); background: var(--card); color: var(--ink-3); }
+.update-tag.hot { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.update-status { margin-top: 8px; font-size: 12px; line-height: 1.6; color: var(--ink-3); min-height: 38px; }
+.update-status.ok { color: var(--mint); }
+.update-status.bad { color: var(--danger); }
+.update-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.update-actions .btn-ghost { height: 42px; font-size: 14px; background: var(--card); }
+.update-actions .btn-ghost:disabled { opacity: .5; }
+.update-actions .btn-ghost[hidden] { display: none; }
+
 /* 确认弹层 */
 .confirm-body { padding: 4px 18px 18px; }
 .confirm-body p { font-size: 14px; color: var(--ink-2); line-height: 1.6; }
