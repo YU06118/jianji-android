@@ -5,14 +5,14 @@
 
 ## 技术方案
 
-采用 **Tauri v2** 移动端支持（Rust 内核 + WebView 前端），与 Windows 端（jianji-desktop）、macOS 端（jianji-macos）保持同一技术栈，最大限度复用共享业务逻辑（记账核心、SQLite 存储层、收支统计）。
+采用 **Tauri v2** 移动端支持（Rust 内核 + WebView 前端），与 Windows 端（jianji-windows）、macOS 端（jianji-macos）保持同一技术栈，最大限度复用共享业务逻辑（记账核心、SQLite 存储层、收支统计）。
 
 ## 各平台仓库
 
 | 平台 | 仓库 | 状态 |
 |------|------|------|
 | 微信小程序 | `YU06118/jianji-miniprogram` | 已完成 |
-| Windows 桌面端 | `YU06118/jianji-desktop` | 已完成 |
+| Windows 桌面端 | `YU06118/jianji-windows` | 已完成 |
 | macOS 桌面端 | `YU06118/jianji-macos` | 已完成 |
 | Android（本仓库） | `YU06118/jianji` | **骨架阶段，内容待填充** |
 
